@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-  signOut,
-} from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+
+import useAuthHandler from '../hooks/useAuthHandler';
 
 const Nav = () => {
   const initialUserData = localStorage.getItem('userData')
@@ -20,10 +16,7 @@ const Nav = () => {
   const [userData, setUserData] = useState(initialUserData);
 
   const navigate = useNavigate();
-
-  //! Firebase Auth
   const auth = getAuth();
-  const provider = new GoogleAuthProvider();
 
   // Determine the page to trace the login status.
   // The conditions must be added to the login page.Or it is reflected in the entire page.
@@ -63,28 +56,23 @@ const Nav = () => {
     navigate(`/search?q=${e.target.value}`);
   };
 
-  //! Handle the sign in. Pop up
-  const handleAuth = () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        setUserData(result.user);
-        localStorage.setItem('userData', JSON.stringify(result.user));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
         setUserData({});
+        localStorage.clear();
         navigate('/');
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  const handleAuth = useAuthHandler(setUserData);
+
+  
+  const username = localStorage.getItem('userData');
+  console.log('username' + username);
 
   return (
     // SHOW's attribute decides how NAV Bar will be seen.

@@ -1,19 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
+import useAuthHandler from '../../hooks/useAuthHandler';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const handleAuth = useAuthHandler();
   return (
     <Container>
       <Content>
-          <Center>
-            <LogoOne src='/images/cta-logo-one.svg' alt='logo-one' />
-            <SignUpLink>지금 가입</SignUpLink>
-            <Description>
-              Get a premier access to the movie. Disney Plus prices will
-              increase 1000 won from next week.
-            </Description>
-            <LogoTwo src='images/cta-logo-two.png' alt='logo-two' />
-          </Center>
+        <Center>
+          <LogoOne src='/images/cta-logo-one.svg' alt='logo-one' />
+          <SignUpLink
+            onClick={() => {
+              navigate('/main');
+              handleAuth();
+            }}
+          >
+            지금 가입
+          </SignUpLink>
+          <Description>
+            Get a premier access to the movie. Disney Plus prices will increase
+            1000 won from next week.
+          </Description>
+          <LogoTwo src='images/cta-logo-two.png' alt='logo-two' />
+        </Center>
         <BgImage />
       </Content>
     </Container>
