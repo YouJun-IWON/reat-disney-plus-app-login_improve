@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
 import useAuthHandler from '../hooks/useAuthHandler';
+import { useSelector } from 'react-redux';
+import { removeUser } from '../store/userSlice';
 
 const Nav = () => {
   const initialUserData = localStorage.getItem('userData')
@@ -13,10 +15,12 @@ const Nav = () => {
   const [show, setShow] = useState(false);
   const { pathname } = useLocation();
   const [searchValue, setSearchValue] = useState('');
-  const [userData, setUserData] = useState(initialUserData);
+  // const [userData, setUserData] = useState(initialUserData);
 
   const navigate = useNavigate();
   const auth = getAuth();
+
+  const userData = useSelector((state) => state.user);
 
   // Determine the page to trace the login status.
   // The conditions must be added to the login page.Or it is reflected in the entire page.
@@ -59,7 +63,7 @@ const Nav = () => {
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
-        setUserData({});
+        dispatchEvent(removeUser());
         localStorage.clear();
         navigate('/');
       })
@@ -68,9 +72,8 @@ const Nav = () => {
       });
   };
 
-  const handleAuth = useAuthHandler(setUserData);
+  const handleAuth = useAuthHandler();
 
-  
   const username = localStorage.getItem('userData');
   console.log('username' + username);
 
